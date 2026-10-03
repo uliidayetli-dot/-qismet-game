@@ -1,0 +1,173 @@
+app.py
+from flask import Flask, request, render_template_string
+
+app = Flask(__name__)
+
+oyunlar = {
+    "gta": "https://www.rockstargames.com/gta-v",
+    "gta 5": "https://www.rockstargames.com/gta-v",
+    "brawl stars": "https://supercell.com/en/games/brawlstars/",
+    "clash royale": "https://supercell.com/en/games/clashroyale/",
+    "minecraft": "https://www.minecraft.net/",
+    "roblox": "https://www.roblox.com/",
+    "car parking multiplayer": "https://www.olzhass.net/"
+}
+
+HTML = """
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Qismət Game - Oyun Saytı</title>
+
+<meta name="description"
+content="Qismət Game - oyunları axtar və oyun linklərini tap.">
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #111827;
+    color: white;
+    text-align: center;
+}
+
+.header {
+    background: #2563eb;
+    padding: 30px;
+}
+
+.container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+input {
+    width: 80%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+}
+
+button {
+    margin-top: 12px;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 12px;
+    background: #22c55e;
+    color: white;
+    font-size: 18px;
+}
+
+.result, .about {
+    margin-top: 30px;
+    padding: 25px;
+    background: #1f2937;
+    border-radius: 15px;
+}
+
+.open {
+    display: inline-block;
+    padding: 15px 25px;
+    background: #2563eb;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<h1>🎮 QİSMƏT GAME</h1>
+<p>Oyunun adını yaz və linkini tap!</p>
+</div>
+
+<div class="container">
+
+<form method="GET">
+<input
+    type="text"
+    name="oyun"
+    placeholder="Məsələn: GTA"
+    value="{{ axtaris }}"
+>
+<br>
+<button type="submit">🔎 Axtar</button>
+</form>
+
+{% if netice %}
+<div class="result">
+<h2>🎮 {{ ad }}</h2>
+<p>Oyun tapıldı!</p>
+
+<a class="open"
+   href="{{ netice }}"
+   target="_blank">
+   🚀 Oyunu aç
+</a>
+
+<p>{{ netice }}</p>
+</div>
+
+{% elif axtaris %}
+
+<div class="result">
+<h2>❌ Oyun tapılmadı</h2>
+<p>Bu oyun siyahıda yoxdur.</p>
+</div>
+{% endif %}
+
+<div class="about">
+<h2>👨‍💻 Haqqında</h2>
+
+<p>
+<b>Qismət Məmmədzadə</b>
+</p>
+
+<p>
+Yazılımcı, 11 yaş, məktəbli
+</p>
+
+<h3>📞 Əlaqə</h3>
+
+<p>055 616 04 35</p>
+</div>
+
+</div>
+
+</body>
+</html>
+"""
+
+@app.route("/")
+def ana_sehife():
+
+    axtaris = request.args.get(
+        "oyun", ""
+    ).strip()
+
+    netice = oyunlar.get(
+        axtaris.lower()
+    )
+
+    ad = axtaris.title()
+
+    return render_template_string(
+        HTML,
+        netice=netice,
+        ad=ad,
+        axtaris=axtaris
+    )
+
+
+if __name__ == "__main__":
+    app.run(
+        host="0.0.0.0",
+        port=5000
+    )
